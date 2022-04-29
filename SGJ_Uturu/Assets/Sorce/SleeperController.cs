@@ -8,13 +8,15 @@ namespace Uturu
     public class SleeperController : MonoBehaviour
     {
         [System.Serializable]
-        public class SleeperStatusClass
+        public class SleeperStatusData
         {
             public Sprite face = null;
             public float angle = 0f;
             public AudioClip audio = null;
             public int point = 0;
             public bool isGameOver = false;
+            public Image balloonImage = null;
+            public float balloonTime = 0f;
         }
 
         public enum EnumMoveFoot
@@ -40,7 +42,7 @@ namespace Uturu
 
         private float m_angle = 0f;
 
-        [SerializeField, Tooltip("各ステータス管理")] public List<SleeperStatusClass> m_statusList = new List<SleeperStatusClass>();
+        [SerializeField, Tooltip("各ステータス管理")] public List<SleeperStatusData> m_statusList = new List<SleeperStatusData>();
 
         private float m_value = 0f; // 足のつり具合
 
@@ -65,6 +67,14 @@ namespace Uturu
             SetFootValue();
             SetAngle();
             ChangeFoot();
+
+            for(int i = 0; i < m_statusList.Count; i++)
+            {
+                if(m_statusList[i].balloonImage != null)
+                {
+                    m_statusList[i].balloonImage.enabled = false;
+                }
+            }
         }
 
         private void SetAngle()
@@ -77,7 +87,8 @@ namespace Uturu
             m_moveFoot = Random.Range(0, (int)EnumMoveFoot.Count);
         }
 
-        // Update is called once per frame
+        private SleeperStatusData m_prevStatus = null;
+        private Coroutine m_coroutineChangeState = null;
         private void Update()
         {
             if (GameManager.Instance.GameStatus == GameManager.EnumGameStatus.Play)
@@ -86,15 +97,48 @@ namespace Uturu
                 SetFootValue();
 
                 // 顔変更
-                SleeperStatusClass sleeperStatus = GetCurrentStatus();
+                SleeperStatusData sleeperStatus = GetCurrentStatus();
                 m_faceImage.sprite = sleeperStatus.face;
                 if (sleeperStatus.isGameOver)
                 {
+                    if (m_prevStatus.balloonImage != null)
+                    {
+                        m_prevStatus.balloonImage.enabled = false;
+                    }
+                    sleeperStatus.balloonImage.enabled = true;
                     AudioSource.PlayOneShot(sleeperStatus.audio);
                     GameManager.Instance.SetScreenMask(false);
                     GameManager.Instance.ChangeGameState(GameManager.EnumGameStatus.Result);
                 }
+                else if(m_prevStatus != sleeperStatus)
+                {
+                    if(m_coroutineChangeState == null && sleeperStatus.balloonImage != null)
+                    {
+                        m_coroutineChangeState = StartCoroutine(CoChangeState(sleeperStatus));
+                    }
+                }
+                m_prevStatus = sleeperStatus;
             }
+        }
+        private IEnumerator CoChangeState(SleeperStatusData sleeperStatus)
+        {
+            if(m_prevStatus.balloonImage != null)
+            {
+                m_prevStatus.balloonImage.enabled = false;
+            }
+
+            sleeperStatus.balloonImage.enabled = true;
+            if(sleeperStatus.balloonTime > 0f)
+            {
+                yield return new WaitForSeconds(sleeperStatus.balloonTime);
+                sleeperStatus.balloonImage.enabled = false;
+            }
+            else
+            {
+                yield return null;
+            }
+
+            m_coroutineChangeState = null;
         }
 
         private void SetFootValue()
@@ -103,9 +147,9 @@ namespace Uturu
             m_footObjList[m_moveFoot].transform.localEulerAngles = new Vector3(0f, 0f, m_value * mirror);
         }
 
-        private SleeperStatusClass GetCurrentStatus()
+        private SleeperStatusData GetCurrentStatus()
         {
-            SleeperStatusClass sleeperStatus = m_statusList[0];
+            SleeperStatusData sleeperStatus = m_statusList[0];
             for (int i = 0; i < m_statusList.Count; i++)
             {
                 sleeperStatus = m_statusList[i];
@@ -119,7 +163,7 @@ namespace Uturu
 
         public int LoosenFoot()
         {
-            SleeperStatusClass sleeperStatus = GetCurrentStatus();
+            SleeperStatusData sleeperStatus = GetCurrentStatus();
             int point = sleeperStatus.point;
             AudioSource.PlayOneShot(sleeperStatus.audio);
 
