@@ -13,7 +13,17 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A)) 
         {
-        
+            transform.Translate(-3, 0, 0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            transform.Translate(3, 0, 0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        {
+            
         }
     }
 }

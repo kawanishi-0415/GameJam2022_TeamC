@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Sorce\PlayerController.cs" />
+    <Compile Include="Assets\Sorce\SleaperController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resource\Sound\ここに音を.txt" />
