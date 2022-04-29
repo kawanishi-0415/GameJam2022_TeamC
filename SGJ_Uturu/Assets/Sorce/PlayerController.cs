@@ -6,15 +6,21 @@ namespace Uturu
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private AudioClip m_moveClip = null;
-        [SerializeField] private AudioClip m_loosenClip = null;
+        public const float LOOSEN_DELAY = 1.0f;
+
+        [SerializeField, Tooltip("à⁄ìÆéûÇÃSE")] private AudioClip m_moveClip = null;
+        [SerializeField, Tooltip("ùÜÇﬁéûÇÃSE")] private AudioClip m_loosenClip = null;
 
         public RectTransform RectTransform { get; private set; } = null;
+        public Animator Animator { get; private set; } = null;
         public AudioSource AudioSource { get; private set; } = null;
+
+        private float m_delayTime = 0f;
 
         private void Awake()
         {
             RectTransform = GetComponent<RectTransform>();
+            Animator = GetComponent<Animator>();
             AudioSource = GetComponent<AudioSource>();
         }
 
@@ -22,21 +28,27 @@ namespace Uturu
         {
             if(GameManager.Instance.GameStatus == GameManager.EnumGameStatus.Play)
             {
-                if (Input.GetKeyDown(KeyCode.A))
+                if(m_delayTime <= 0f)
                 {
-                    GameManager.Instance.ChangePlayerPosition(-1);
-                    PlaySe(m_moveClip);
+                    if (Input.GetKeyDown(KeyCode.A))
+                    {
+                        GameManager.Instance.ChangePlayerPosition(-1);
+                        PlaySe(m_moveClip);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.D))
+                    {
+                        GameManager.Instance.ChangePlayerPosition(1);
+                        PlaySe(m_moveClip);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        GameManager.Instance.LoosenSleeper();
+                        Animator.SetTrigger(Animator.StringToHash("Loosen"));
+                        PlaySe(m_loosenClip);
+                        m_delayTime = LOOSEN_DELAY;
+                    }
                 }
-                else if(Input.GetKeyDown(KeyCode.D))
-                {
-                    GameManager.Instance.ChangePlayerPosition(1);
-                    PlaySe(m_moveClip);
-                }
-                else if(Input.GetKeyDown(KeyCode.Space))
-                {
-                    GameManager.Instance.LoosenSleeper();
-                    PlaySe(m_loosenClip);
-                }
+                m_delayTime -= Time.deltaTime;
             }
         }
 

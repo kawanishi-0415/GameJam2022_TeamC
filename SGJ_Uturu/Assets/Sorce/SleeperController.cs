@@ -31,7 +31,13 @@ namespace Uturu
         [SerializeField, Tooltip("顔イメージ")] private Image m_faceImage = null;
         [SerializeField, Tooltip("足オブジェクト")] private List<GameObject> m_footObjList = new List<GameObject>();
 
-        [SerializeField, Tooltip("1秒に増える角度")] private float m_mag = 5.0f;
+        [SerializeField, Tooltip("1秒に増える角度(基準値)")] private float m_baseAngle = 5.0f;
+        [SerializeField, Tooltip("1秒に増える角度(誤差)")] private float m_diffAngle = 2.0f;
+
+        [SerializeField, Tooltip("開始時の角度(最小)")] private float m_initValueMin = 0f;
+        [SerializeField, Tooltip("開始時の角度(最大)")] private float m_initValueMax = 30f;
+
+        private float m_angle = 0f;
 
         [SerializeField, Tooltip("各ステータス管理")] public List<SleeperStatusClass> m_statusList = new List<SleeperStatusClass>();
 
@@ -49,7 +55,14 @@ namespace Uturu
         // Start is called before the first frame update
         private void Start()
         {
+            SetAngle();
             ChangeFoot();
+            m_value = Random.Range(m_initValueMin, m_initValueMax);
+        }
+
+        private void SetAngle()
+        {
+            m_angle = Random.Range(m_baseAngle - m_diffAngle / 2, m_baseAngle + m_diffAngle / 2);
         }
 
         private void ChangeFoot()
@@ -60,12 +73,15 @@ namespace Uturu
         // Update is called once per frame
         private void Update()
         {
-            m_value += m_mag * Time.deltaTime;
-            SetFootValue();
+            if (GameManager.Instance.GameStatus == GameManager.EnumGameStatus.Play)
+            {
+                m_value += m_angle * Time.deltaTime;
+                SetFootValue();
 
-            // 顔変更
-            SleeperStatusClass sleeperStatus = GetCurrentStatus();
-            m_faceImage.sprite = sleeperStatus.face;
+                // 顔変更
+                SleeperStatusClass sleeperStatus = GetCurrentStatus();
+                m_faceImage.sprite = sleeperStatus.face;
+            }
         }
 
         private void SetFootValue()
@@ -94,8 +110,9 @@ namespace Uturu
             int point = sleeperStatus.point;
             AudioSource.PlayOneShot(sleeperStatus.audio);
 
-            m_value = 0f;
+            m_value = Random.Range(m_initValueMin, m_initValueMax);
             SetFootValue();
+            SetAngle();
             ChangeFoot();
             return point;
         }

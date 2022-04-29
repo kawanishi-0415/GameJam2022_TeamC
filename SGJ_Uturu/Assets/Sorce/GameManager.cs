@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Uturu
 {
@@ -23,15 +24,19 @@ namespace Uturu
 
         public const int SLEEPER_NUM = 5;
         public const float STAGE_TIME = 30f;
+        public const float MORNING_TIME = 10f;
 
-        [SerializeField, Tooltip("ゲームオブジェクト")] Transform m_gameTransform = null;
-        [SerializeField, Tooltip("寝てる人格納エリア")] Transform m_sleeperAreaTransform = null;
+        [SerializeField, Tooltip("ゲームオブジェクト")] private Transform m_gameTransform = null;
+        [SerializeField, Tooltip("寝てる人格納エリア")] private Transform m_sleeperAreaTransform = null;
 
-        [SerializeField, Tooltip("スコア表示テキスト")] TextMeshProUGUI m_scoreText = null;
-        [SerializeField, Tooltip("時間表示テキスト")] TextMeshProUGUI m_timeText = null;
+        [SerializeField, Tooltip("スコア表示テキスト")] private TextMeshProUGUI m_scoreText = null;
+        [SerializeField, Tooltip("時間表示テキスト")] private TextMeshProUGUI m_timeText = null;
 
-        [SerializeField, Tooltip("プレイヤープレハブ")] PlayerController m_playerPrefab = null;
-        [SerializeField, Tooltip("寝てる人プレハブ")] SleeperController m_sleeperPrefab = null;
+        [SerializeField, Tooltip("窓用背景マスク")] private Image m_windowMaskImage = null;
+        [SerializeField, Tooltip("画面用マスク")] private Image m_screenMaskImage = null;
+
+        [SerializeField, Tooltip("プレイヤープレハブ")] private PlayerController m_playerPrefab = null;
+        [SerializeField, Tooltip("寝てる人プレハブ")] private SleeperController m_sleeperPrefab = null;
 
         private PlayerController m_player = null;
         private List<SleeperController> m_sleeperList = new List<SleeperController>();
@@ -65,7 +70,16 @@ namespace Uturu
             m_player = Instantiate(m_playerPrefab, m_gameTransform);
             yield return null;
 
+            SetWindowMaskImage();
+
             SetPlayerPosition(0);
+        }
+
+        private void SetWindowMaskImage()
+        {
+            Color color = m_windowMaskImage.color;
+            color.a = m_time / MORNING_TIME;
+            m_windowMaskImage.color = color;
         }
 
         private void SetPlayerPosition(int index)
@@ -108,6 +122,7 @@ namespace Uturu
                     StatusResult();
                     break;
             }
+            SetWindowMaskImage();
 
             m_timeText.text = string.Format("{0:00}", Mathf.Ceil(m_time));
             m_scoreText.text = string.Format("{0:0}", m_point);
