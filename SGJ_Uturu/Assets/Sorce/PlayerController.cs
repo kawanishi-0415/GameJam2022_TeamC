@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+namespace Uturu
 {
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A)) 
+        void Start()
         {
-            transform.Translate(-3, 0, 0);
+
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        void Update()
         {
-            transform.Translate(3, 0, 0);
-        }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                transform.Translate(-3, 0, 0);
+            }
 
-        if (Input.GetKeyDown(KeyCode.Space)) 
-        {
-            
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                transform.Translate(3, 0, 0);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+
+            }
         }
     }
 }
