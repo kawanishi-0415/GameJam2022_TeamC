@@ -68,7 +68,10 @@ namespace Uturu
             SetAngle();
             ChangeFoot();
 
-            for(int i = 0; i < m_statusList.Count; i++)
+            SleeperStatusData sleeperStatus = GetCurrentStatus();
+            m_faceImage.sprite = sleeperStatus.face;
+
+            for (int i = 0; i < m_statusList.Count; i++)
             {
                 if(m_statusList[i].balloonImage != null)
                 {

@@ -44,6 +44,7 @@ namespace Uturu
 
         [SerializeField, Tooltip("プレイヤープレハブ")] private PlayerController m_playerPrefab = null;
         [SerializeField, Tooltip("寝てる人プレハブ")] private SleeperController m_sleeperPrefab = null;
+        [SerializeField, Tooltip("レディWindowプレハブ")] private ReadyWindow m_readyWindowPrefab = null;
         [SerializeField, Tooltip("リザルトWindowプレハブ")] private ResultWindow m_resultWindowPrefab = null;
 
         [SerializeField, Tooltip("ゲーム中BGM")] private AudioClip m_gameClip = null;
@@ -57,10 +58,12 @@ namespace Uturu
         /// <summary>制限時間</summary>
         public float m_time = STAGE_TIME;
         /// <summary>点数</summary>
-        public int m_point = 0;
+        public int Score { get; private set; } = 0;
         /// <summary>点数</summary>
         private int m_playerPosIndex = 0;
 
+        /// <summary>レディ用コルーチン</summary>
+        private Coroutine m_coroutineReady = null;
         /// <summary>リザルト用コルーチン</summary>
         private Coroutine m_coroutineResult = null;
 
@@ -89,6 +92,7 @@ namespace Uturu
 
             StartCoroutine(CoStart());
         }
+
         /// <summary>
         /// 整列後にプレイヤー位置を決める為、1F遅らせてます
         /// </summary>
@@ -171,7 +175,7 @@ namespace Uturu
         /// <returns></returns>
         public void LoosenSleeper()
         {
-            m_point += m_sleeperList[m_playerPosIndex].LoosenFoot();
+            Score += m_sleeperList[m_playerPosIndex].LoosenFoot();
         }
 
         /// <summary>
@@ -203,7 +207,7 @@ namespace Uturu
             SetWindowMaskImage();
 
             m_timeText.text = string.Format("{0:00}", Mathf.Ceil(m_time));
-            m_scoreText.text = string.Format("{0:0}", m_point);
+            m_scoreText.text = string.Format("{0:0}", Score);
         }
 
         /// <summary>
@@ -213,7 +217,7 @@ namespace Uturu
         private void StatusInit()
         {
             m_time = STAGE_TIME;
-            m_point = 0;
+            Score = 0;
 
             SetWindowMaskImage();
             SetScreenMask(true);
@@ -224,7 +228,7 @@ namespace Uturu
                 m_sleeperList[i].Init();
             }
 
-            ChangeBGM(m_gameClip);
+            ChangeBGM(null);
 
             GameStatus = EnumGameStatus.Ready;
         }
@@ -235,8 +239,34 @@ namespace Uturu
         /// <returns></returns>
         private void StatusReady()
         {
+            if (m_coroutineReady == null)
+            {
+                m_coroutineReady = StartCoroutine(CoReady());
+            }
+        }
+        private IEnumerator CoReady()
+        {
+            ReadyWindow readyWindow = Instantiate(m_readyWindowPrefab, m_uiTransform);
+            yield return null;
+
+            while (!readyWindow.IsEndAnimation())
+            {
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
+
+            while (!Input.GetKeyDown(KeyCode.Space))
+            {
+                yield return null;
+            }
+
+            Destroy(readyWindow.gameObject);
+
             GameStatus = EnumGameStatus.Play;
             AudioSource.Play();
+            ChangeBGM(m_gameClip);
+
+            m_coroutineReady = null;
         }
 
         /// <summary>
