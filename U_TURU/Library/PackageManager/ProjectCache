@@ -5,7 +5,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637868068549405478
+      ticks: 637868107889257096
     m_Hash: 2473341795
   m_LockFileStatus:
     m_FilePath: D:/Unity Game build/GameJam2022_TeamC/U_TURU/Packages/packages-lock.json
@@ -13,7 +13,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637868068549405478
+      ticks: 637868107889267803
     m_Hash: 1383147997
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}

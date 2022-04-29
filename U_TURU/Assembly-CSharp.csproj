@@ -53,6 +53,7 @@
     <UnityVersion>2020.3.23f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Sorce\SleaperController.cs" />
     <Compile Include="Assets\Sorce\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
