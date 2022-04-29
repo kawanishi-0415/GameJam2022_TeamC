@@ -11,6 +11,9 @@ namespace Uturu
         private static GameManager m_instance = null;
         public static GameManager Instance { get { return m_instance; } }
 
+        /// <summary>
+        /// ゲームの進行状況管理列挙型
+        /// </summary>
         public enum EnumGameStatus
         {
             Init,
@@ -22,8 +25,11 @@ namespace Uturu
         }
         public EnumGameStatus GameStatus { get; private set; } = EnumGameStatus.Init;
 
+        /// <summary>寝ている人の数</summary>
         public const int SLEEPER_NUM = 5;
+        /// <summary>1プレイの制限時間</summary>
         public const float STAGE_TIME = 30f;
+        /// <summary>明るくなりだす時間</summary>
         public const float MORNING_TIME = 10f;
 
         [SerializeField, Tooltip("ゲームオブジェクト")] private Transform m_gameTransform = null;
@@ -43,12 +49,20 @@ namespace Uturu
         [SerializeField, Tooltip("ゲーム中BGM")] private AudioClip m_gameClip = null;
         [SerializeField, Tooltip("リザルトBGM")] private AudioClip m_resultClip = null;
 
+        /// <summary>プレイヤー</summary>
         private PlayerController m_player = null;
+        /// <summary>寝ている人</summary>
         private List<SleeperController> m_sleeperList = new List<SleeperController>();
 
+        /// <summary>制限時間</summary>
         public float m_time = STAGE_TIME;
+        /// <summary>点数</summary>
         public int m_point = 0;
-        private int m_playerPositionIndex = 0;
+        /// <summary>点数</summary>
+        private int m_playerPosIndex = 0;
+
+        /// <summary>リザルト用コルーチン</summary>
+        private Coroutine m_coroutineResult = null;
 
         public AudioSource AudioSource { get; private set; } = null;
 
@@ -63,10 +77,6 @@ namespace Uturu
 
         private void Start()
         {
-            StartCoroutine(CoStart());
-        }
-        private IEnumerator CoStart()
-        {
             for (int i = 0; i < SLEEPER_NUM; i++)
             {
                 SleeperController sleeper = Instantiate(m_sleeperPrefab, m_sleeperAreaTransform);
@@ -76,11 +86,24 @@ namespace Uturu
 
             SetWindowMaskImage();
             SetScreenMask(true);
+
+            StartCoroutine(CoStart());
+        }
+        /// <summary>
+        /// 整列後にプレイヤー位置を決める為、1F遅らせてます
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator CoStart()
+        {
             yield return null;
 
             SetPlayerPosition(0);
         }
 
+        /// <summary>
+        /// 窓の外の明るさ設定
+        /// </summary>
+        /// <returns></returns>
         private void SetWindowMaskImage()
         {
             Color color = m_windowMaskImage.color;
@@ -88,11 +111,19 @@ namespace Uturu
             m_windowMaskImage.color = color;
         }
 
+        /// <summary>
+        /// 画面全体を暗くしている画像のOn/Off
+        /// </summary>
+        /// <returns></returns>
         public void SetScreenMask(bool flag)
         {
             m_screenMaskImage.enabled = flag;
         }
 
+        /// <summary>
+        /// BGM切り替え(ゲームプレイ中/リザルト)
+        /// </summary>
+        /// <returns></returns>
         private void ChangeBGM(AudioClip clip)
         {
             if (AudioSource.isPlaying)
@@ -107,29 +138,46 @@ namespace Uturu
             }
         }
 
+        /// <summary>
+        /// BGM切り替え(ゲームプレイ中/リザルト)
+        /// </summary>
+        /// <returns></returns>
         private void SetPlayerPosition(int index)
         {
             Vector3 position = m_player.RectTransform.position;
             position.x = m_sleeperList[index].RectTransform.position.x;
             m_player.RectTransform.position = position;
 
-            m_playerPositionIndex = index;
+            m_playerPosIndex = index;
         }
 
+        /// <summary>
+        /// プレイヤー位置の切り替え
+        /// X座標は寝ている人の位置に合わせる
+        /// </summary>
+        /// <returns></returns>
         public void ChangePlayerPosition(int add)
         {
-            int index = m_playerPositionIndex + add;
+            int index = m_playerPosIndex + add;
             if (index >= m_sleeperList.Count) index = 0;
             else if (index < 0) index = m_sleeperList.Count - 1;
 
             SetPlayerPosition(index);
         }
 
+        /// <summary>
+        /// 寝ている人の足をほぐす
+        /// </summary>
+        /// <returns></returns>
         public void LoosenSleeper()
         {
-            m_point += m_sleeperList[m_playerPositionIndex].LoosenFoot();
+            m_point += m_sleeperList[m_playerPosIndex].LoosenFoot();
         }
 
+        /// <summary>
+        /// ゲーム内ステータスの切り替え
+        /// </summary>
+        /// <returns></returns>
         public void ChangeGameState(EnumGameStatus status)
         {
             GameStatus = status;
@@ -158,6 +206,10 @@ namespace Uturu
             m_scoreText.text = string.Format("{0:0}", m_point);
         }
 
+        /// <summary>
+        /// 初期化処理
+        /// </summary>
+        /// <returns></returns>
         private void StatusInit()
         {
             m_time = STAGE_TIME;
@@ -177,12 +229,20 @@ namespace Uturu
             GameStatus = EnumGameStatus.Ready;
         }
 
+        /// <summary>
+        /// ゲーム開始処理
+        /// </summary>
+        /// <returns></returns>
         private void StatusReady()
         {
             GameStatus = EnumGameStatus.Play;
             AudioSource.Play();
         }
 
+        /// <summary>
+        /// ゲーム処理
+        /// </summary>
+        /// <returns></returns>
         private void StatusPlay()
         {
             m_time -= Time.deltaTime;
@@ -194,7 +254,10 @@ namespace Uturu
             }
         }
 
-        private Coroutine m_coroutineResult = null;
+        /// <summary>
+        /// リザルト処理
+        /// </summary>
+        /// <returns></returns>
         private void StatusResult()
         {
             if(m_coroutineResult == null)
@@ -203,6 +266,10 @@ namespace Uturu
             }
         }
 
+        /// <summary>
+        /// リザルトのコルーチン
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator CoResult()
         {
             ChangeBGM(m_resultClip);

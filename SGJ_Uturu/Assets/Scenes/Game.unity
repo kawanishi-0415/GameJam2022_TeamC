@@ -243,8 +243,8 @@ MonoBehaviour:
   m_playerPrefab: {fileID: 2005171593318994657, guid: 8958ac32c7eec0d47befb83a5ca9b4d5, type: 3}
   m_sleeperPrefab: {fileID: 7780025087699338906, guid: 88365d4a9de9a3441903f0945eb34059, type: 3}
   m_resultWindowPrefab: {fileID: -4241723265486782151, guid: 287508a8cccdf31429afd21bb83c7107, type: 3}
-  m_gameClip: {fileID: 0}
-  m_resultClip: {fileID: 0}
+  m_gameClip: {fileID: 8300000, guid: 63eb847715c8bf447a7ffff5807b15c7, type: 3}
+  m_resultClip: {fileID: 8300000, guid: 94f779612b58a57429c2f6e92ecfadd8, type: 3}
   m_time: 30
   m_point: 0
 --- !u!82 &142167652
@@ -595,7 +595,7 @@ Canvas:
   m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 10
   m_TargetDisplay: 0
@@ -1062,7 +1062,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.14901961}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.2}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
