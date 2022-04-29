@@ -506,18 +506,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_faceImage: {fileID: 7780025088268429409}
-  m_rfootObj: {fileID: 7780025087047341379}
-  m_lfootObj: {fileID: 7780025087118738674}
+  m_footObjList:
+  - {fileID: 7780025087047341379}
+  - {fileID: 7780025087118738674}
   m_mag: 5
   m_statusList:
   - face: {fileID: 21300000, guid: 874d0115f206db64181d9a40bf02da48, type: 3}
     angle: 0
   - face: {fileID: 21300000, guid: dccf76e76a924cb4d81f0f871f983960, type: 3}
-    angle: 40
+    angle: 30
   - face: {fileID: 21300000, guid: 5750c56ecfe38bc47ba0a57ddaddc0b3, type: 3}
-    angle: 80
+    angle: 60
   - face: {fileID: 21300000, guid: fbeeeb49226e6b1438b7301dd38bd3da, type: 3}
-    angle: 120
+    angle: 90
 --- !u!1 &7780025088268429411
 GameObject:
   m_ObjectHideFlags: 0
