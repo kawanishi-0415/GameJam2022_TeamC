@@ -235,12 +235,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameTransform: {fileID: 409664041}
   m_sleeperAreaTransform: {fileID: 144687149}
+  m_uiTransform: {fileID: 236574546}
   m_scoreText: {fileID: 222093485}
   m_timeText: {fileID: 704209421}
   m_windowMaskImage: {fileID: 987043952}
   m_screenMaskImage: {fileID: 1024560778}
   m_playerPrefab: {fileID: 2005171593318994657, guid: 8958ac32c7eec0d47befb83a5ca9b4d5, type: 3}
   m_sleeperPrefab: {fileID: 7780025087699338906, guid: 88365d4a9de9a3441903f0945eb34059, type: 3}
+  m_resultWindowPrefab: {fileID: -4241723265486782151, guid: 287508a8cccdf31429afd21bb83c7107, type: 3}
   m_time: 30
   m_point: 0
 --- !u!82 &142167652

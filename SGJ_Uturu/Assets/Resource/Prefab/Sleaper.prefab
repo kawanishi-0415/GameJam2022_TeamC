@@ -510,24 +510,31 @@ MonoBehaviour:
   m_footObjList:
   - {fileID: 7780025087047341379}
   - {fileID: 7780025087118738674}
-  m_mag: 5
+  m_baseAngle: 5
+  m_diffAngle: 2
+  m_initValueMin: 0
+  m_initValueMax: 30
   m_statusList:
   - face: {fileID: 21300000, guid: 874d0115f206db64181d9a40bf02da48, type: 3}
     angle: 30
     audio: {fileID: 8300000, guid: 48e67ec3f2ef0f541b22a4e4ceb31214, type: 3}
     point: -100
+    isGameOver: 0
   - face: {fileID: 21300000, guid: dccf76e76a924cb4d81f0f871f983960, type: 3}
     angle: 60
     audio: {fileID: 8300000, guid: 1559e2b2b1fc8b442ae1e0f2528b4f0e, type: 3}
     point: 10
+    isGameOver: 0
   - face: {fileID: 21300000, guid: 5750c56ecfe38bc47ba0a57ddaddc0b3, type: 3}
     angle: 80
     audio: {fileID: 8300000, guid: 05392fc00aafdff438abe8878035d21e, type: 3}
     point: 50
+    isGameOver: 0
   - face: {fileID: 21300000, guid: fbeeeb49226e6b1438b7301dd38bd3da, type: 3}
     angle: 100
     audio: {fileID: 8300000, guid: e6832c61c13d4084e914ec85ca4649b0, type: 3}
     point: 0
+    isGameOver: 1
 --- !u!82 &5636208055719667584
 AudioSource:
   m_ObjectHideFlags: 0

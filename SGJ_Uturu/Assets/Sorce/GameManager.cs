@@ -28,6 +28,7 @@ namespace Uturu
 
         [SerializeField, Tooltip("ゲームオブジェクト")] private Transform m_gameTransform = null;
         [SerializeField, Tooltip("寝てる人格納エリア")] private Transform m_sleeperAreaTransform = null;
+        [SerializeField, Tooltip("UIエリア")] private Transform m_uiTransform = null;
 
         [SerializeField, Tooltip("スコア表示テキスト")] private TextMeshProUGUI m_scoreText = null;
         [SerializeField, Tooltip("時間表示テキスト")] private TextMeshProUGUI m_timeText = null;
@@ -37,6 +38,10 @@ namespace Uturu
 
         [SerializeField, Tooltip("プレイヤープレハブ")] private PlayerController m_playerPrefab = null;
         [SerializeField, Tooltip("寝てる人プレハブ")] private SleeperController m_sleeperPrefab = null;
+        [SerializeField, Tooltip("リザルトWindowプレハブ")] private ResultWindow m_resultWindowPrefab = null;
+
+        [SerializeField, Tooltip("ゲーム中BGM")] private AudioClip m_gameClip = null;
+        [SerializeField, Tooltip("リザルトBGM")] private AudioClip m_resultClip = null;
 
         private PlayerController m_player = null;
         private List<SleeperController> m_sleeperList = new List<SleeperController>();
@@ -68,9 +73,10 @@ namespace Uturu
                 m_sleeperList.Add(sleeper);
             }
             m_player = Instantiate(m_playerPrefab, m_gameTransform);
-            yield return null;
 
             SetWindowMaskImage();
+            SetScreenMask(true);
+            yield return null;
 
             SetPlayerPosition(0);
         }
@@ -80,6 +86,25 @@ namespace Uturu
             Color color = m_windowMaskImage.color;
             color.a = m_time / MORNING_TIME;
             m_windowMaskImage.color = color;
+        }
+
+        public void SetScreenMask(bool flag)
+        {
+            m_screenMaskImage.enabled = flag;
+        }
+
+        private void ChangeBGM(AudioClip clip)
+        {
+            if (AudioSource.isPlaying)
+            {
+                AudioSource.Stop();
+            }
+
+            if(clip != null)
+            {
+                AudioSource.clip = clip;
+                AudioSource.Play();
+            }
         }
 
         private void SetPlayerPosition(int index)
@@ -103,6 +128,11 @@ namespace Uturu
         public void LoosenSleeper()
         {
             m_point += m_sleeperList[m_playerPositionIndex].LoosenFoot();
+        }
+
+        public void ChangeGameState(EnumGameStatus status)
+        {
+            GameStatus = status;
         }
 
         private void Update()
@@ -130,6 +160,20 @@ namespace Uturu
 
         private void StatusInit()
         {
+            m_time = STAGE_TIME;
+            m_point = 0;
+
+            SetWindowMaskImage();
+            SetScreenMask(true);
+            SetPlayerPosition(0);
+
+            for(int i = 0; i < m_sleeperList.Count; i++)
+            {
+                m_sleeperList[i].Init();
+            }
+
+            ChangeBGM(m_gameClip);
+
             GameStatus = EnumGameStatus.Ready;
         }
 
@@ -150,9 +194,36 @@ namespace Uturu
             }
         }
 
+        private Coroutine m_coroutineResult = null;
         private void StatusResult()
         {
+            if(m_coroutineResult == null)
+            {
+                m_coroutineResult = StartCoroutine(CoResult());
+            }
+        }
 
+        private IEnumerator CoResult()
+        {
+            ChangeBGM(m_resultClip);
+            ResultWindow resultWindow = Instantiate(m_resultWindowPrefab, m_uiTransform);
+            yield return null;
+
+            while (!resultWindow.IsEndAnimation())
+            {
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
+
+            while (!Input.GetKeyDown(KeyCode.Space))
+            {
+                yield return null;
+            }
+
+            Destroy(resultWindow.gameObject);
+
+            GameStatus = EnumGameStatus.Init;
+            m_coroutineResult = null;
         }
     }
 }

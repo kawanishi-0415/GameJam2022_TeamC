@@ -14,6 +14,7 @@ namespace Uturu
             public float angle = 0f;
             public AudioClip audio = null;
             public int point = 0;
+            public bool isGameOver = false;
         }
 
         public enum EnumMoveFoot
@@ -55,9 +56,15 @@ namespace Uturu
         // Start is called before the first frame update
         private void Start()
         {
+            Init();
+        }
+
+        public void Init()
+        {
+            m_value = Random.Range(m_initValueMin, m_initValueMax);
+            SetFootValue();
             SetAngle();
             ChangeFoot();
-            m_value = Random.Range(m_initValueMin, m_initValueMax);
         }
 
         private void SetAngle()
@@ -81,6 +88,12 @@ namespace Uturu
                 // äÁïœçX
                 SleeperStatusClass sleeperStatus = GetCurrentStatus();
                 m_faceImage.sprite = sleeperStatus.face;
+                if (sleeperStatus.isGameOver)
+                {
+                    AudioSource.PlayOneShot(sleeperStatus.audio);
+                    GameManager.Instance.SetScreenMask(false);
+                    GameManager.Instance.ChangeGameState(GameManager.EnumGameStatus.Result);
+                }
             }
         }
 
@@ -110,10 +123,7 @@ namespace Uturu
             int point = sleeperStatus.point;
             AudioSource.PlayOneShot(sleeperStatus.audio);
 
-            m_value = Random.Range(m_initValueMin, m_initValueMax);
-            SetFootValue();
-            SetAngle();
-            ChangeFoot();
+            Init();
             return point;
         }
     }
