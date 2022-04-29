@@ -7,6 +7,9 @@ namespace Uturu
 {
     public class GameManager : MonoBehaviour
     {
+        private static GameManager m_instance = null;
+        public static GameManager Instance { get { return m_instance; } }
+
         public enum EnumGameStatus
         {
             Init,
@@ -16,7 +19,7 @@ namespace Uturu
 
             Max,
         }
-        private EnumGameStatus m_gameStatus = EnumGameStatus.Init;
+        public EnumGameStatus GameStatus { get; private set; } = EnumGameStatus.Init;
 
         public const int SLEEPER_NUM = 5;
         public const float STAGE_TIME = 30f;
@@ -34,25 +37,63 @@ namespace Uturu
         private List<SleeperController> m_sleeperList = new List<SleeperController>();
 
         public float m_time = STAGE_TIME;
+        public int m_point = 0;
+        private int m_playerPositionIndex = 0;
+
+        public AudioSource AudioSource { get; private set; } = null;
 
         private void Awake()
         {
-            
+            if(m_instance == null)
+            {
+                m_instance = this;
+            }
+            AudioSource = GetComponent<AudioSource>();
         }
 
         private void Start()
         {
-            for(int i = 0; i < SLEEPER_NUM; i++)
+            StartCoroutine(CoStart());
+        }
+        private IEnumerator CoStart()
+        {
+            for (int i = 0; i < SLEEPER_NUM; i++)
             {
                 SleeperController sleeper = Instantiate(m_sleeperPrefab, m_sleeperAreaTransform);
                 m_sleeperList.Add(sleeper);
             }
             m_player = Instantiate(m_playerPrefab, m_gameTransform);
+            yield return null;
+
+            SetPlayerPosition(0);
+        }
+
+        private void SetPlayerPosition(int index)
+        {
+            Vector3 position = m_player.RectTransform.position;
+            position.x = m_sleeperList[index].RectTransform.position.x;
+            m_player.RectTransform.position = position;
+
+            m_playerPositionIndex = index;
+        }
+
+        public void ChangePlayerPosition(int add)
+        {
+            int index = m_playerPositionIndex + add;
+            if (index >= m_sleeperList.Count) index = 0;
+            else if (index < 0) index = m_sleeperList.Count - 1;
+
+            SetPlayerPosition(index);
+        }
+
+        public void LoosenSleeper()
+        {
+            m_point += m_sleeperList[m_playerPositionIndex].LoosenFoot();
         }
 
         private void Update()
         {
-            switch (m_gameStatus)
+            switch (GameStatus)
             {
                 case EnumGameStatus.Init:
                     StatusInit();
@@ -69,17 +110,18 @@ namespace Uturu
             }
 
             m_timeText.text = string.Format("{0:00}", Mathf.Ceil(m_time));
-            m_scoreText.text = "0";
+            m_scoreText.text = string.Format("{0:0}", m_point);
         }
 
         private void StatusInit()
         {
-            m_gameStatus = EnumGameStatus.Ready;
+            GameStatus = EnumGameStatus.Ready;
         }
 
         private void StatusReady()
         {
-            m_gameStatus = EnumGameStatus.Play;
+            GameStatus = EnumGameStatus.Play;
+            AudioSource.Play();
         }
 
         private void StatusPlay()
@@ -89,7 +131,7 @@ namespace Uturu
             Mathf.Max(m_time, 0f);
             if (m_time <= 0f)
             {
-                m_gameStatus = EnumGameStatus.Result;
+                GameStatus = EnumGameStatus.Result;
             }
         }
 
