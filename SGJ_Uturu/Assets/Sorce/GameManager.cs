@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace Uturu
 {
@@ -319,7 +320,8 @@ namespace Uturu
 
             Destroy(resultWindow.gameObject);
 
-            GameStatus = EnumGameStatus.Init;
+            //GameStatus = EnumGameStatus.Init;
+            SceneManager.LoadScene("Title");
             m_coroutineResult = null;
         }
     }
