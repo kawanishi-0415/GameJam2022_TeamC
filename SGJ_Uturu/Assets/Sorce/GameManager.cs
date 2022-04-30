@@ -254,7 +254,6 @@ namespace Uturu
             {
                 yield return null;
             }
-            yield return new WaitForSeconds(0.5f);
 
             while (!Input.GetKeyDown(KeyCode.Space))
             {
