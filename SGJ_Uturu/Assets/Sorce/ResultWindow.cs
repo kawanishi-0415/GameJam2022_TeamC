@@ -8,6 +8,9 @@ namespace Uturu
 {
     public class ResultWindow : MonoBehaviour
     {
+        /// <summary>
+        /// リザルト時の表示条件管理データ
+        /// </summary>
         [System.Serializable]
         public class ResultData
         {
@@ -41,6 +44,10 @@ namespace Uturu
             m_scoreText.text = GameManager.Instance.Score.ToString();
         }
 
+        /// <summary>
+        /// アニメーションが終わったかのチェック
+        /// </summary>
+        /// <returns></returns>
         public bool IsEndAnimation()
         {
             return Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f;
