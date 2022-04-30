@@ -6,8 +6,7 @@ namespace Uturu
 {
     public class PlayerController : MonoBehaviour
     {
-        /// <summary>揉む際のディレイ</summary>
-        public const float LOOSEN_DELAY = 1.0f;
+        [SerializeField, Tooltip("揉む際のディレイ")] public float m_loosenDelay = 1.0f;
 
         [SerializeField, Tooltip("移動時のSE")] private AudioClip m_moveClip = null;
         [SerializeField, Tooltip("揉む時のSE")] private AudioClip m_loosenClip = null;
@@ -47,7 +46,7 @@ namespace Uturu
                         GameManager.Instance.LoosenSleeper();
                         Animator.SetTrigger(Animator.StringToHash("Loosen"));
                         PlaySe(m_loosenClip);
-                        m_delayTime = LOOSEN_DELAY;
+                        m_delayTime = m_loosenDelay;
                     }
                 }
                 m_delayTime -= Time.deltaTime;

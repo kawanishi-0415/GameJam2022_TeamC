@@ -203,6 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27f55886f6846ca45b54e41868eeabf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_loosenDelay: 0.5
   m_moveClip: {fileID: 8300000, guid: 4faa8f643c067fd4ca2fee2d0e64e449, type: 3}
   m_loosenClip: {fileID: 8300000, guid: e5b45e6d11e7e904d84d2530b078487a, type: 3}
 --- !u!82 &-8133380374303734673
