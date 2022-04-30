@@ -750,7 +750,7 @@ MonoBehaviour:
   - face: {fileID: 21300000, guid: fbeeeb49226e6b1438b7301dd38bd3da, type: 3}
     angle: 75
     audio: {fileID: 8300000, guid: e6832c61c13d4084e914ec85ca4649b0, type: 3}
-    point: 0
+    point: -2000
     isGameOver: 1
     balloonImage: {fileID: 4569494138133239404}
     balloonTime: 0

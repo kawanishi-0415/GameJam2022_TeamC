@@ -59,7 +59,7 @@ namespace Uturu
         /// <summary>§ŒÀŠÔ</summary>
         public float m_time = STAGE_TIME;
         /// <summary>“_”</summary>
-        public int Score { get; private set; } = 0;
+        public int Score { get; set; } = 0;
         /// <summary>“_”</summary>
         private int m_playerPosIndex = 0;
 

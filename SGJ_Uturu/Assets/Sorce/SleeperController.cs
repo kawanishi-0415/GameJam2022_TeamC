@@ -119,6 +119,7 @@ namespace Uturu
                         m_prevStatus.balloonImage.enabled = false;
                     }
                     sleeperStatus.balloonImage.enabled = true;
+                    GameManager.Instance.Score = sleeperStatus.point;
                     AudioSource.PlayOneShot(sleeperStatus.audio);
                     GameManager.Instance.SetScreenMask(false);
                     GameManager.Instance.ChangeGameState(GameManager.EnumGameStatus.Result);
