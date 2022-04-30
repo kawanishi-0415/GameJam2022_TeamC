@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641252, b: 0.5748167, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -242,6 +242,7 @@ MonoBehaviour:
   m_screenMaskImage: {fileID: 1024560778}
   m_playerPrefab: {fileID: 2005171593318994657, guid: 8958ac32c7eec0d47befb83a5ca9b4d5, type: 3}
   m_sleeperPrefab: {fileID: 7780025087699338906, guid: 88365d4a9de9a3441903f0945eb34059, type: 3}
+  m_addScorePrefab: {fileID: 6379076686063350905, guid: 0c9c58afc5a706c47b8e6ae2d01622d6, type: 3}
   m_readyWindowPrefab: {fileID: 5812751106595601154, guid: 8a4c5ce962e520645876912f2f062c9c, type: 3}
   m_resultWindowPrefab: {fileID: -4241723265486782151, guid: 287508a8cccdf31429afd21bb83c7107, type: 3}
   m_gameClip: {fileID: 8300000, guid: 63eb847715c8bf447a7ffff5807b15c7, type: 3}

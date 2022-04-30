@@ -45,6 +45,7 @@ namespace Uturu
 
         [SerializeField, Tooltip("プレイヤープレハブ")] private PlayerController m_playerPrefab = null;
         [SerializeField, Tooltip("寝てる人プレハブ")] private SleeperController m_sleeperPrefab = null;
+        [SerializeField, Tooltip("得点追加プレハブ")] private AddScore m_addScorePrefab = null;
         [SerializeField, Tooltip("レディWindowプレハブ")] private ReadyWindow m_readyWindowPrefab = null;
         [SerializeField, Tooltip("リザルトWindowプレハブ")] private ResultWindow m_resultWindowPrefab = null;
 
@@ -92,6 +93,25 @@ namespace Uturu
             SetScreenMask(true);
 
             StartCoroutine(CoStart());
+        }
+
+        /// <summary>
+        /// スコアーの可変
+        /// </summary>
+        /// <param name="add"></param>
+        public void AddScore(int add)
+        {
+            AddScore addScore = Instantiate(m_addScorePrefab, m_scoreText.transform);
+            addScore.SetText(add);
+            Score += add;
+        }
+
+        public void StopSleeperVoice()
+        {
+            for(int i = 0; i < m_sleeperList.Count; i++)
+            {
+                m_sleeperList[i].StopVoice();
+            }
         }
 
         /// <summary>
@@ -176,7 +196,7 @@ namespace Uturu
         /// <returns></returns>
         public void LoosenSleeper()
         {
-            Score += m_sleeperList[m_playerPosIndex].LoosenFoot();
+            AddScore(m_sleeperList[m_playerPosIndex].LoosenFoot());
         }
 
         /// <summary>

@@ -125,7 +125,8 @@ namespace Uturu
                         m_prevStatus.balloonImage.enabled = false;
                     }
                     sleeperStatus.balloonImage.enabled = true;
-                    GameManager.Instance.Score += sleeperStatus.point;
+                    GameManager.Instance.AddScore(sleeperStatus.point);
+                    GameManager.Instance.StopSleeperVoice();
                     AudioSource.PlayOneShot(sleeperStatus.audio);
                     GameManager.Instance.SetScreenMask(false);
                     GameManager.Instance.ChangeGameState(GameManager.EnumGameStatus.Result);
@@ -154,6 +155,14 @@ namespace Uturu
             else
             {
                 m_faceImage.sprite = sleeperStatus.face;
+            }
+        }
+
+        public void StopVoice()
+        {
+            if (AudioSource.isPlaying)
+            {
+                AudioSource.Stop();
             }
         }
 
