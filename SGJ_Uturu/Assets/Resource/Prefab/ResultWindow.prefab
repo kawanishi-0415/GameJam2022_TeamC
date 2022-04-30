@@ -186,15 +186,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_resultDataList:
   - sprite: {fileID: 21300000, guid: b4563b48cf248bd49b542c3a822042db, type: 3}
-    score: 100
+    score: 1000
   - sprite: {fileID: 21300000, guid: 0b6a564807f0875409b8d4259717665c, type: 3}
-    score: 200
+    score: 2000
   - sprite: {fileID: 21300000, guid: ed8cddd53a8148d429e9fa33322a8711, type: 3}
-    score: 300
+    score: 3000
   - sprite: {fileID: 21300000, guid: a32fdbd853d088e4ebf86e0dcdd49f90, type: 3}
-    score: 400
+    score: 4000
   - sprite: {fileID: 21300000, guid: 9533b3136b92766428f86f8ee1956cf2, type: 3}
-    score: 500
+    score: 5000
   m_image: {fileID: 5030489717963963271}
   m_scoreText: {fileID: 5030489717539786138}
 --- !u!95 &1205877549627741437

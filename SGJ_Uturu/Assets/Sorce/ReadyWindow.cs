@@ -13,6 +13,10 @@ namespace Uturu
             Animator = GetComponent<Animator>();
         }
 
+        /// <summary>
+        /// アニメーションが終わったかのチェック
+        /// </summary>
+        /// <returns></returns>
         public bool IsEndAnimation()
         {
             return Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f;

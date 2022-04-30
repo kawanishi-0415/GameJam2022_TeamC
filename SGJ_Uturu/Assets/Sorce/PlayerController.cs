@@ -6,6 +6,7 @@ namespace Uturu
 {
     public class PlayerController : MonoBehaviour
     {
+        /// <summary>揉む際のディレイ</summary>
         public const float LOOSEN_DELAY = 1.0f;
 
         [SerializeField, Tooltip("移動時のSE")] private AudioClip m_moveClip = null;
@@ -15,6 +16,7 @@ namespace Uturu
         public Animator Animator { get; private set; } = null;
         public AudioSource AudioSource { get; private set; } = null;
 
+        /// <summary>ディレイタイム(0以下でないと操作できない)</summary>
         private float m_delayTime = 0f;
 
         private void Awake()
@@ -52,6 +54,10 @@ namespace Uturu
             }
         }
 
+        /// <summary>
+        /// SEの鳴動(移動と揉むを一つのAudioSourceに委ねている為)
+        /// </summary>
+        /// <param name="clip"></param>
         private void PlaySe(AudioClip clip)
         {
             if (AudioSource.isPlaying)

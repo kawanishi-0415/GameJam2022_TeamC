@@ -19,6 +19,7 @@ namespace Uturu
             public float balloonTime = 0f;
         }
 
+        /// <summary>左右の足管理列挙型</summary>
         public enum EnumMoveFoot
         {
             RightFoot,
@@ -26,10 +27,8 @@ namespace Uturu
 
             Count,
         }
+        /// <summary>移動している足</summary>
         private int m_moveFoot = 0;
-
-        public const float MIN_CLEAR_VALUE = 0f;
-        public const float GAMEOVER_VALUE = 180f;
 
         [SerializeField, Tooltip("顔イメージ")] private Image m_faceImage = null;
         [SerializeField, Tooltip("足オブジェクト")] private List<GameObject> m_footObjList = new List<GameObject>();
@@ -40,11 +39,13 @@ namespace Uturu
         [SerializeField, Tooltip("開始時の角度(最小)")] private float m_initValueMin = 0f;
         [SerializeField, Tooltip("開始時の角度(最大)")] private float m_initValueMax = 30f;
 
+        /// <summary>現在の足の角度</summary>
         private float m_angle = 0f;
 
         [SerializeField, Tooltip("各ステータス管理")] public List<SleeperStatusData> m_statusList = new List<SleeperStatusData>();
 
-        private float m_value = 0f; // 足のつり具合
+        /// <summary>足のつり具合</summary>
+        private float m_value = 0f;
 
         public RectTransform RectTransform { get; private set; } = null;
         public AudioSource AudioSource { get; private set; } = null;
@@ -61,12 +62,15 @@ namespace Uturu
             Init();
         }
 
+        /// <summary>
+        /// 足の状態初期化処理
+        /// </summary>
         public void Init()
         {
             m_value = Random.Range(m_initValueMin, m_initValueMax);
-            SetFootValue();
-            SetAngle();
-            ChangeFoot();
+            SetFootAngle();
+            SetInitAngle();
+            ChangeMoveFoot();
 
             SleeperStatusData sleeperStatus = GetCurrentStatus();
             m_faceImage.sprite = sleeperStatus.face;
@@ -80,12 +84,18 @@ namespace Uturu
             }
         }
 
-        private void SetAngle()
+        /// <summary>
+        /// 足の角度を初期化
+        /// </summary>
+        private void SetInitAngle()
         {
             m_angle = Random.Range(m_baseAngle - m_diffAngle / 2, m_baseAngle + m_diffAngle / 2);
         }
 
-        private void ChangeFoot()
+        /// <summary>
+        /// 動く足を再設定
+        /// </summary>
+        private void ChangeMoveFoot()
         {
             m_moveFoot = Random.Range(0, (int)EnumMoveFoot.Count);
         }
@@ -97,7 +107,7 @@ namespace Uturu
             if (GameManager.Instance.GameStatus == GameManager.EnumGameStatus.Play)
             {
                 m_value += m_angle * Time.deltaTime;
-                SetFootValue();
+                SetFootAngle();
 
                 // 顔変更
                 SleeperStatusData sleeperStatus = GetCurrentStatus();
@@ -117,13 +127,18 @@ namespace Uturu
                 {
                     if(m_coroutineChangeState == null && sleeperStatus.balloonImage != null)
                     {
-                        m_coroutineChangeState = StartCoroutine(CoChangeState(sleeperStatus));
+                        m_coroutineChangeState = StartCoroutine(CoBalloonDisp(sleeperStatus));
                     }
                 }
                 m_prevStatus = sleeperStatus;
             }
         }
-        private IEnumerator CoChangeState(SleeperStatusData sleeperStatus)
+        /// <summary>
+        /// 吹き出しの表示処理
+        /// </summary>
+        /// <param name="sleeperStatus"></param>
+        /// <returns></returns>
+        private IEnumerator CoBalloonDisp(SleeperStatusData sleeperStatus)
         {
             if(m_prevStatus.balloonImage != null)
             {
@@ -144,12 +159,20 @@ namespace Uturu
             m_coroutineChangeState = null;
         }
 
-        private void SetFootValue()
+        /// <summary>
+        /// 足の表示角度を設定
+        /// </summary>
+        /// <returns></returns>
+        private void SetFootAngle()
         {
             int mirror = m_moveFoot == (int)EnumMoveFoot.RightFoot ? -1 : 1;
             m_footObjList[m_moveFoot].transform.localEulerAngles = new Vector3(0f, 0f, m_value * mirror);
         }
 
+        /// <summary>
+        /// 現在の足の状態ステータスを取得
+        /// </summary>
+        /// <returns></returns>
         private SleeperStatusData GetCurrentStatus()
         {
             SleeperStatusData sleeperStatus = m_statusList[0];
@@ -164,10 +187,14 @@ namespace Uturu
             return sleeperStatus;
         }
 
+        /// <summary>
+        /// 足をもみほぐす
+        /// </summary>
+        /// <returns></returns>
         public int LoosenFoot()
         {
             SleeperStatusData sleeperStatus = GetCurrentStatus();
-            int point = sleeperStatus.point;
+            int point = sleeperStatus.point + (int)Mathf.Ceil(m_value);
             AudioSource.PlayOneShot(sleeperStatus.audio);
 
             Init();
