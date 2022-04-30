@@ -17,6 +17,7 @@ namespace Uturu
             public bool isGameOver = false;
             public Image balloonImage = null;
             public float balloonTime = 0f;
+            public bool isAngry = false;
         }
 
         /// <summary>左右の足管理列挙型</summary>
@@ -43,6 +44,11 @@ namespace Uturu
         private float m_angle = 0f;
 
         [SerializeField, Tooltip("各ステータス管理")] public List<SleeperStatusData> m_statusList = new List<SleeperStatusData>();
+        [SerializeField, Tooltip("怒った顔のスプライト")] private Sprite m_angryFace = null;
+        [SerializeField, Tooltip("怒った顔の時間")] private float m_angryTime = 1.0f;
+
+        /// <summary>怒っているか？</summary>
+        private bool m_isAngry = false;
 
         /// <summary>足のつり具合</summary>
         private float m_value = 0f;
@@ -73,7 +79,7 @@ namespace Uturu
             ChangeMoveFoot();
 
             SleeperStatusData sleeperStatus = GetCurrentStatus();
-            m_faceImage.sprite = sleeperStatus.face;
+            ChangeFace(sleeperStatus);
 
             for (int i = 0; i < m_statusList.Count; i++)
             {
@@ -111,7 +117,7 @@ namespace Uturu
 
                 // 顔変更
                 SleeperStatusData sleeperStatus = GetCurrentStatus();
-                m_faceImage.sprite = sleeperStatus.face;
+                ChangeFace(sleeperStatus);
                 if (sleeperStatus.isGameOver)
                 {
                     if (m_prevStatus.balloonImage != null)
@@ -119,7 +125,7 @@ namespace Uturu
                         m_prevStatus.balloonImage.enabled = false;
                     }
                     sleeperStatus.balloonImage.enabled = true;
-                    GameManager.Instance.Score = sleeperStatus.point;
+                    GameManager.Instance.Score += sleeperStatus.point;
                     AudioSource.PlayOneShot(sleeperStatus.audio);
                     GameManager.Instance.SetScreenMask(false);
                     GameManager.Instance.ChangeGameState(GameManager.EnumGameStatus.Result);
@@ -134,6 +140,23 @@ namespace Uturu
                 m_prevStatus = sleeperStatus;
             }
         }
+
+        /// <summary>
+        /// 顔画像の変更
+        /// </summary>
+        /// <param name="sleeperStatus"></param>
+        private void ChangeFace(SleeperStatusData sleeperStatus)
+        {
+            if (m_isAngry)
+            {
+                m_faceImage.sprite = m_angryFace;
+            }
+            else
+            {
+                m_faceImage.sprite = sleeperStatus.face;
+            }
+        }
+
         /// <summary>
         /// 吹き出しの表示処理
         /// </summary>
@@ -198,8 +221,32 @@ namespace Uturu
             int point = sleeperStatus.point + (int)Mathf.Ceil(m_value);
             AudioSource.PlayOneShot(sleeperStatus.audio);
 
+            // 揉むのが早いと怒る
+            if (sleeperStatus.isAngry)
+            {
+                if(m_coroutineAngry == null)
+                {
+                    m_coroutineAngry = StartCoroutine(CoAngry());
+                }
+            }
+
             Init();
             return point;
+        }
+
+        private Coroutine m_coroutineAngry = null;
+
+        /// <summary>
+        /// 怒る
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator CoAngry()
+        {
+            m_isAngry = true;
+            yield return new WaitForSeconds(m_angryTime);
+            m_isAngry = false;
+
+            m_coroutineAngry = null;
         }
     }
 }
