@@ -229,13 +229,18 @@ namespace Uturu
 
             m_timeText.text = string.Format("{0:00}", Mathf.Ceil(m_time));
             m_scoreText.text = string.Format("{0:0}", Score);
+
+#if UNITY_STANDALONE
+            if (Input.GetKey(KeyCode.Escape))
+                UnityEngine.Application.Quit();
+#endif
         }
 
-        /// <summary>
-        /// ‰Šú‰»ˆ—
-        /// </summary>
-        /// <returns></returns>
-        private void StatusInit()
+            /// <summary>
+            /// ‰Šú‰»ˆ—
+            /// </summary>
+            /// <returns></returns>
+            private void StatusInit()
         {
             m_time = STAGE_TIME;
             Score = 0;
@@ -330,7 +335,6 @@ namespace Uturu
             {
                 yield return null;
             }
-            yield return new WaitForSeconds(0.5f);
 
             while (!Input.GetKeyDown(KeyCode.Space))
             {

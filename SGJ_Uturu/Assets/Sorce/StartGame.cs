@@ -11,5 +11,9 @@ public class StartGame : MonoBehaviour
             {
                 SceneManager.LoadScene("Game");
             }
+#if UNITY_STANDALONE
+            if (Input.GetKey(KeyCode.Escape))
+                UnityEngine.Application.Quit();
+#endif
     }
 }
