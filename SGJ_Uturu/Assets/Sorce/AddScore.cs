@@ -32,7 +32,7 @@ namespace Uturu
 
         private void Start()
         {
-            StartCoroutine(CoStart(Random.Range(1.0f, 1.5f)));
+            StartCoroutine(CoStart(Random.Range(0.7f, 1.0f)));
             Vector2 position = RectTransform.anchoredPosition;
             position.x += Random.Range(0f, 300f);
             position.y -= Random.Range(100f, 130f);
@@ -47,6 +47,16 @@ namespace Uturu
         private IEnumerator CoStart(float time)
         {
             yield return new WaitForSeconds(time);
+            float DESTROY_TIME = 0.5f;
+            float destroyTime = DESTROY_TIME;
+            while(destroyTime > 0f)
+            {
+                destroyTime -= Time.deltaTime;
+                Color color = m_scoreText.color;
+                color.a = destroyTime / DESTROY_TIME;
+                m_scoreText.color = color;
+                yield return null;
+            }
 
             Destroy(gameObject);
         }
